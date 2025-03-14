@@ -7,6 +7,6 @@
     <title>32ks.lol</title>
 </head>
 <body>
-    <p>Hello world</p>
+    <p>NICEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE</p>
 </body>
 </html>
