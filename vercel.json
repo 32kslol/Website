@@ -1,8 +1,8 @@
 {
-  "rewrites": [
-    {
-      "source": "/main",
-      "destination": "/main.html"
-    }
+  "redirects": [
+    { "source": "/me", "destination": "/profile.html", "permanent": true }
   ]
+  {
+  "cleanUrls": true
+  }
 }
