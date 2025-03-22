@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display IP Address</title>
+</head>
+<body>
+    <h1>Your IP Address is: <span id="ip"></span></h1>
+
+    <script>
+        fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('ip').textContent = data.ip;
+            })
+            .catch(error => {
+                document.getElementById('ip').textContent = 'Unable to fetch IP address';
+            });
+    </script>
+</body>
+</html>
