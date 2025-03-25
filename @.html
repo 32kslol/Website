@@ -107,9 +107,9 @@
         
         setTimeout(updateText, 2000);
         
-        // Snow effect with subtle cursor influence
+        // Snow effect with improved recycling
         const snowContainer = document.getElementById('snow-container');
-        const snowflakeCount = 150;
+        const snowflakeCount = 125;
         const snowflakes = [];
         let mouseX = window.innerWidth / 2;
         let mouseY = window.innerHeight / 2;
@@ -129,25 +129,32 @@
                 this.element.style.width = `${this.size}px`;
                 this.element.style.height = `${this.size}px`;
                 
-                this.reset();
+                this.reset(true);
                 
                 this.speed = Math.random() * 2 + 1;
-                this.driftSpeed = Math.random() * 0.3 + 0.1; // Reduced drift speed
+                this.driftSpeed = Math.random() * 0.3 + 0.1;
                 this.element.style.opacity = Math.random() * 0.7 + 0.3;
                 this.element.style.zIndex = Math.floor(Math.random() * 5);
                 
                 snowContainer.appendChild(this.element);
             }
             
-            reset() {
+            reset(initial = false) {
+                // Start at random x position above the viewport
                 this.x = Math.random() * window.innerWidth;
-                this.y = -10 - Math.random() * 100;
+                
+                // For initial creation, spread them throughout the viewport
+                // For recycling, start just above the viewport
+                this.y = initial ? 
+                    Math.random() * window.innerHeight * 1.2 - window.innerHeight * 0.2 :
+                    -10 - Math.random() * 20;
+                
                 this.driftDirection = Math.random() > 0.5 ? 1 : -1;
                 this.windInfluence = 0;
             }
             
             update() {
-                // Always move downward (never up)
+                // Always move downward
                 this.y += this.speed;
                 
                 // Calculate horizontal distance to cursor
@@ -157,7 +164,7 @@
                 // Only affect snowflakes within 300px horizontally
                 if (distanceX < 300) {
                     // Subtle horizontal influence only
-                    const influence = (300 - distanceX) / 300 * 0.3; // Reduced influence
+                    const influence = (300 - distanceX) / 300 * 0.3;
                     this.x += cursorDistanceX * 0.001 * influence;
                 }
                 
@@ -171,15 +178,14 @@
                 
                 this.element.style.transform = `translate(${this.x}px, ${this.y}px)`;
                 
-                if (this.y > window.innerHeight + 20 || 
-                    this.x < -50 || 
-                    this.x > window.innerWidth + 50) {
+                // Only reset if completely out of view
+                if (this.y > window.innerHeight + this.size * 2) {
                     this.reset();
                 }
             }
         }
         
-        // Create snowflakes
+        // Create initial snowflakes spread throughout the viewport
         for (let i = 0; i < snowflakeCount; i++) {
             snowflakes.push(new Snowflake());
         }
@@ -197,7 +203,7 @@
         // Handle window resize
         window.addEventListener('resize', () => {
             for (const flake of snowflakes) {
-                flake.reset();
+                flake.reset(true);
             }
         });
     </script>
