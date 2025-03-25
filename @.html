@@ -17,6 +17,7 @@
             font-family: 'Arial', sans-serif;
             overflow: hidden;
             position: relative;
+            cursor: default;
         }
         
         .text-container {
@@ -44,13 +45,7 @@
             border-radius: 50%;
             pointer-events: none;
             opacity: 0.8;
-            animation: fall linear infinite;
-        }
-        
-        @keyframes fall {
-            to {
-                transform: translateY(100vh);
-            }
+            will-change: transform;
         }
     </style>
 </head>
@@ -66,65 +61,137 @@
         const textElement = document.getElementById('disappearing-text');
         const originalText = '32ks.lol';
         let currentText = originalText;
+        let isDisappearing = true;
+        let currentIndex = originalText.length;
         
         function updateText() {
-            if (currentText.length > 0) {
-                currentText = currentText.slice(0, -1);
-                textElement.textContent = currentText;
-                
-                // Randomize the timing for the next step
-                const randomTime = Math.random() * 1000 + 500;
-                setTimeout(updateText, randomTime);
-            } else {
-                // Reset after a pause
-                setTimeout(() => {
-                    currentText = originalText;
+            if (isDisappearing) {
+                if (currentText.length > 0) {
+                    currentText = currentText.slice(0, -1);
                     textElement.textContent = currentText;
+                    
+                    // Randomize the timing for the next step
+                    const randomTime = Math.random() * 1000 + 500;
+                    setTimeout(updateText, randomTime);
+                } else {
+                    // Switch to appearing mode
+                    isDisappearing = false;
+                    currentIndex = 0;
+                    setTimeout(updateText, 1000);
+                }
+            } else {
+                if (currentIndex < originalText.length) {
+                    currentText = originalText.substring(0, currentIndex + 1);
+                    textElement.textContent = currentText;
+                    currentIndex++;
+                    
+                    // Randomize the timing for the next step
+                    const randomTime = Math.random() * 500 + 200;
+                    setTimeout(updateText, randomTime);
+                } else {
+                    // Switch back to disappearing mode after a pause
+                    isDisappearing = true;
                     setTimeout(updateText, 2000);
-                }, 1000);
+                }
             }
         }
         
         // Start the effect after 2 seconds
         setTimeout(updateText, 2000);
         
-        // Snow effect
+        // Snow effect with cursor influence
         const snowContainer = document.getElementById('snow-container');
         const snowflakeCount = 100;
+        const snowflakes = [];
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
         
-        function createSnowflake() {
-            const snowflake = document.createElement('div');
-            snowflake.className = 'snowflake';
+        // Track mouse position
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+        
+        class Snowflake {
+            constructor() {
+                this.element = document.createElement('div');
+                this.element.className = 'snowflake';
+                
+                // Random size between 2px and 6px
+                this.size = Math.random() * 4 + 2;
+                this.element.style.width = `${this.size}px`;
+                this.element.style.height = `${this.size}px`;
+                
+                // Random starting position
+                this.reset();
+                
+                // Random animation speed
+                this.speed = Math.random() * 2 + 1;
+                
+                // Random horizontal drift speed
+                this.driftSpeed = Math.random() * 0.5 + 0.1;
+                
+                // Random opacity
+                this.element.style.opacity = Math.random() * 0.7 + 0.3;
+                
+                snowContainer.appendChild(this.element);
+            }
             
-            // Random size between 2px and 6px
-            const size = Math.random() * 4 + 2;
-            snowflake.style.width = `${size}px`;
-            snowflake.style.height = `${size}px`;
+            reset() {
+                this.x = Math.random() * window.innerWidth;
+                this.y = -10;
+                this.driftDirection = Math.random() > 0.5 ? 1 : -1;
+            }
             
-            // Random starting position
-            snowflake.style.left = `${Math.random() * 100}vw`;
-            snowflake.style.top = `-10px`;
-            
-            // Random animation duration between 5s and 15s
-            const duration = Math.random() * 10 + 5;
-            snowflake.style.animationDuration = `${duration}s`;
-            
-            // Random delay
-            snowflake.style.animationDelay = `${Math.random() * 5}s`;
-            
-            snowContainer.appendChild(snowflake);
-            
-            // Remove snowflake after it falls
-            setTimeout(() => {
-                snowflake.remove();
-                createSnowflake();
-            }, duration * 1000);
+            update() {
+                // Basic falling
+                this.y += this.speed;
+                
+                // Calculate cursor influence (stronger when closer to cursor)
+                const cursorDistanceX = mouseX - this.x;
+                const cursorDistanceY = mouseY - this.y;
+                const distance = Math.sqrt(cursorDistanceX * cursorDistanceX + cursorDistanceY * cursorDistanceY);
+                
+                // Only affect snowflakes within 300px of cursor
+                if (distance < 300) {
+                    const influence = (300 - distance) / 300 * 0.5; // 0-0.5 influence factor
+                    this.x += cursorDistanceX * 0.001 * influence;
+                } else {
+                    // Natural drift
+                    this.x += Math.sin(this.y * 0.01) * this.driftSpeed * this.driftDirection;
+                }
+                
+                // Update position
+                this.element.style.transform = `translate(${this.x}px, ${this.y}px)`;
+                
+                // Reset if out of view
+                if (this.y > window.innerHeight || this.x < -20 || this.x > window.innerWidth + 20) {
+                    this.reset();
+                }
+            }
         }
         
-        // Create initial snowflakes
+        // Create snowflakes
         for (let i = 0; i < snowflakeCount; i++) {
-            createSnowflake();
+            snowflakes.push(new Snowflake());
         }
+        
+        // Animation loop
+        function animate() {
+            for (const flake of snowflakes) {
+                flake.update();
+            }
+            requestAnimationFrame(animate);
+        }
+        
+        animate();
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            for (const flake of snowflakes) {
+                flake.reset();
+            }
+        });
     </script>
 </body>
 </html>
