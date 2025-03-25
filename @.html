@@ -80,13 +80,11 @@
                 if (currentText.length > 0) {
                     currentText = currentText.slice(0, -1);
                     textElement.textContent = currentText;
-                    titleElement.textContent = currentText + ' '; // Update title tag
+                    titleElement.textContent = currentText + ' ';
                     
-                    // Randomize the timing for the next step
                     const randomTime = Math.random() * 1000 + 500;
                     setTimeout(updateText, randomTime);
                 } else {
-                    // Switch to appearing mode
                     isDisappearing = false;
                     currentIndex = 0;
                     setTimeout(updateText, 1000);
@@ -95,52 +93,31 @@
                 if (currentIndex < originalText.length) {
                     currentText = originalText.substring(0, currentIndex + 1);
                     textElement.textContent = currentText;
-                    titleElement.textContent = currentText + ' '; // Update title tag
+                    titleElement.textContent = currentText + ' ';
                     currentIndex++;
                     
-                    // Randomize the timing for the next step
                     const randomTime = Math.random() * 500 + 200;
                     setTimeout(updateText, randomTime);
                 } else {
-                    // Switch back to disappearing mode after a pause
                     isDisappearing = true;
                     setTimeout(updateText, 2000);
                 }
             }
         }
         
-        // Start the effect after 2 seconds
         setTimeout(updateText, 2000);
         
-        // Snow effect with enhanced cursor influence
+        // Snow effect with subtle cursor influence
         const snowContainer = document.getElementById('snow-container');
         const snowflakeCount = 150;
         const snowflakes = [];
         let mouseX = window.innerWidth / 2;
         let mouseY = window.innerHeight / 2;
-        let mouseVelocityX = 0;
-        let mouseVelocityY = 0;
-        let lastMouseX = mouseX;
-        let lastMouseY = mouseY;
         
-        // Track mouse position and velocity
+        // Track mouse position
         document.addEventListener('mousemove', (e) => {
             mouseX = e.clientX;
             mouseY = e.clientY;
-            
-            // Calculate mouse velocity for more dynamic effects
-            const now = Date.now();
-            if (lastMouseX !== undefined) {
-                const deltaTime = Math.min(100, now - lastTime);
-                if (deltaTime > 0) {
-                    mouseVelocityX = (mouseX - lastMouseX) / deltaTime * 1000;
-                    mouseVelocityY = (mouseY - lastMouseY) / deltaTime * 1000;
-                }
-            }
-            
-            lastMouseX = mouseX;
-            lastMouseY = mouseY;
-            lastTime = now;
         });
         
         class Snowflake {
@@ -155,7 +132,7 @@
                 this.reset();
                 
                 this.speed = Math.random() * 2 + 1;
-                this.driftSpeed = Math.random() * 1 + 0.5;
+                this.driftSpeed = Math.random() * 0.3 + 0.1; // Reduced drift speed
                 this.element.style.opacity = Math.random() * 0.7 + 0.3;
                 this.element.style.zIndex = Math.floor(Math.random() * 5);
                 
@@ -170,24 +147,27 @@
             }
             
             update() {
-                this.y += this.speed + Math.random() * 0.2;
+                // Always move downward (never up)
+                this.y += this.speed;
                 
+                // Calculate horizontal distance to cursor
                 const cursorDistanceX = mouseX - this.x;
-                const cursorDistanceY = mouseY - this.y;
-                const distance = Math.sqrt(cursorDistanceX * cursorDistanceX + cursorDistanceY * cursorDistanceY);
+                const distanceX = Math.abs(cursorDistanceX);
                 
-                if (distance < 500) {
-                    const influence = (500 - distance) / 500 * 1.5;
-                    this.x += cursorDistanceX * 0.002 * influence;
-                    this.y += cursorDistanceY * 0.001 * influence;
-                    this.x += mouseVelocityX * 0.05 * influence;
-                    this.y += mouseVelocityY * 0.03 * influence;
+                // Only affect snowflakes within 300px horizontally
+                if (distanceX < 300) {
+                    // Subtle horizontal influence only
+                    const influence = (300 - distanceX) / 300 * 0.3; // Reduced influence
+                    this.x += cursorDistanceX * 0.001 * influence;
                 }
                 
-                this.windInfluence += (Math.random() - 0.5) * 0.1;
-                this.windInfluence = Math.max(-1, Math.min(1, this.windInfluence));
+                // Natural wind-like drift (very subtle)
+                this.windInfluence += (Math.random() - 0.5) * 0.05;
+                this.windInfluence = Math.max(-0.5, Math.min(0.5, this.windInfluence));
                 this.x += this.windInfluence * this.driftSpeed;
-                this.x += Math.sin(this.y * 0.01 + this.size) * 0.5;
+                
+                // Gentle sinusoidal movement
+                this.x += Math.sin(this.y * 0.01 + this.size) * 0.3;
                 
                 this.element.style.transform = `translate(${this.x}px, ${this.y}px)`;
                 
@@ -204,17 +184,8 @@
             snowflakes.push(new Snowflake());
         }
         
-        let lastTime = Date.now();
-        
         // Animation loop
         function animate() {
-            const now = Date.now();
-            const deltaTime = now - lastTime;
-            lastTime = now;
-            
-            mouseVelocityX *= 0.95;
-            mouseVelocityY *= 0.95;
-            
             for (const flake of snowflakes) {
                 flake.update();
             }
