@@ -3,7 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>32ks.lol</title>
+    <meta name="description" content="32ks.lol - A cool visual experience with interactive snow">
+    <meta name="keywords" content="32ks, snow effect, interactive, web design">
+    <meta name="author" content="32ks">
+    <meta property="og:title" content="32ks.lol">
+    <meta property="og:description" content="Interactive snow experience">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://32ks.lol">
+    <link rel="icon" href="https://example.com/favicon.ico" type="image/x-icon">
+    <title id="title-tag">32ks.lol</title>
     <style>
         body {
             margin: 0;
@@ -25,10 +33,11 @@
             z-index: 10;
         }
         
-        h1 {
+        .title-text {
             font-size: 5rem;
             margin: 0;
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            font-weight: bold;
         }
         
         .snow {
@@ -46,12 +55,13 @@
             pointer-events: none;
             opacity: 0.8;
             will-change: transform;
+            transition: transform 0.1s ease-out;
         }
     </style>
 </head>
 <body>
     <div class="text-container">
-        <h1 id="disappearing-text">32ks.lol</h1>
+        <div class="title-text" id="disappearing-text">32ks.lol</div>
     </div>
     
     <div class="snow" id="snow-container"></div>
@@ -59,6 +69,7 @@
     <script>
         // Disappearing text effect
         const textElement = document.getElementById('disappearing-text');
+        const titleElement = document.getElementById('title-tag');
         const originalText = '32ks.lol';
         let currentText = originalText;
         let isDisappearing = true;
@@ -69,6 +80,7 @@
                 if (currentText.length > 0) {
                     currentText = currentText.slice(0, -1);
                     textElement.textContent = currentText;
+                    titleElement.textContent = currentText + ' '; // Update title tag
                     
                     // Randomize the timing for the next step
                     const randomTime = Math.random() * 1000 + 500;
@@ -83,6 +95,7 @@
                 if (currentIndex < originalText.length) {
                     currentText = originalText.substring(0, currentIndex + 1);
                     textElement.textContent = currentText;
+                    titleElement.textContent = currentText + ' '; // Update title tag
                     currentIndex++;
                     
                     // Randomize the timing for the next step
@@ -99,17 +112,35 @@
         // Start the effect after 2 seconds
         setTimeout(updateText, 2000);
         
-        // Snow effect with cursor influence
+        // Snow effect with enhanced cursor influence
         const snowContainer = document.getElementById('snow-container');
-        const snowflakeCount = 100;
+        const snowflakeCount = 150;
         const snowflakes = [];
         let mouseX = window.innerWidth / 2;
         let mouseY = window.innerHeight / 2;
+        let mouseVelocityX = 0;
+        let mouseVelocityY = 0;
+        let lastMouseX = mouseX;
+        let lastMouseY = mouseY;
         
-        // Track mouse position
+        // Track mouse position and velocity
         document.addEventListener('mousemove', (e) => {
             mouseX = e.clientX;
             mouseY = e.clientY;
+            
+            // Calculate mouse velocity for more dynamic effects
+            const now = Date.now();
+            if (lastMouseX !== undefined) {
+                const deltaTime = Math.min(100, now - lastTime);
+                if (deltaTime > 0) {
+                    mouseVelocityX = (mouseX - lastMouseX) / deltaTime * 1000;
+                    mouseVelocityY = (mouseY - lastMouseY) / deltaTime * 1000;
+                }
+            }
+            
+            lastMouseX = mouseX;
+            lastMouseY = mouseY;
+            lastTime = now;
         });
         
         class Snowflake {
@@ -117,55 +148,52 @@
                 this.element = document.createElement('div');
                 this.element.className = 'snowflake';
                 
-                // Random size between 2px and 6px
-                this.size = Math.random() * 4 + 2;
+                this.size = Math.random() * 6 + 2;
                 this.element.style.width = `${this.size}px`;
                 this.element.style.height = `${this.size}px`;
                 
-                // Random starting position
                 this.reset();
                 
-                // Random animation speed
                 this.speed = Math.random() * 2 + 1;
-                
-                // Random horizontal drift speed
-                this.driftSpeed = Math.random() * 0.5 + 0.1;
-                
-                // Random opacity
+                this.driftSpeed = Math.random() * 1 + 0.5;
                 this.element.style.opacity = Math.random() * 0.7 + 0.3;
+                this.element.style.zIndex = Math.floor(Math.random() * 5);
                 
                 snowContainer.appendChild(this.element);
             }
             
             reset() {
                 this.x = Math.random() * window.innerWidth;
-                this.y = -10;
+                this.y = -10 - Math.random() * 100;
                 this.driftDirection = Math.random() > 0.5 ? 1 : -1;
+                this.windInfluence = 0;
             }
             
             update() {
-                // Basic falling
-                this.y += this.speed;
+                this.y += this.speed + Math.random() * 0.2;
                 
-                // Calculate cursor influence (stronger when closer to cursor)
                 const cursorDistanceX = mouseX - this.x;
                 const cursorDistanceY = mouseY - this.y;
                 const distance = Math.sqrt(cursorDistanceX * cursorDistanceX + cursorDistanceY * cursorDistanceY);
                 
-                // Only affect snowflakes within 300px of cursor
-                if (distance < 300) {
-                    const influence = (300 - distance) / 300 * 0.5; // 0-0.5 influence factor
-                    this.x += cursorDistanceX * 0.001 * influence;
-                } else {
-                    // Natural drift
-                    this.x += Math.sin(this.y * 0.01) * this.driftSpeed * this.driftDirection;
+                if (distance < 500) {
+                    const influence = (500 - distance) / 500 * 1.5;
+                    this.x += cursorDistanceX * 0.002 * influence;
+                    this.y += cursorDistanceY * 0.001 * influence;
+                    this.x += mouseVelocityX * 0.05 * influence;
+                    this.y += mouseVelocityY * 0.03 * influence;
                 }
                 
-                // Update position
+                this.windInfluence += (Math.random() - 0.5) * 0.1;
+                this.windInfluence = Math.max(-1, Math.min(1, this.windInfluence));
+                this.x += this.windInfluence * this.driftSpeed;
+                this.x += Math.sin(this.y * 0.01 + this.size) * 0.5;
+                
                 this.element.style.transform = `translate(${this.x}px, ${this.y}px)`;
                 
-                // Reset if out of view
-                if (this.y > window.innerHeight || this.x < -20 || this.x > window.innerWidth + 20) {
+                if (this.y > window.innerHeight + 20 || 
+                    this.x < -50 || 
+                    this.x > window.innerWidth + 50) {
                     this.reset();
                 }
             }
@@ -176,8 +204,17 @@
             snowflakes.push(new Snowflake());
         }
         
+        let lastTime = Date.now();
+        
         // Animation loop
         function animate() {
+            const now = Date.now();
+            const deltaTime = now - lastTime;
+            lastTime = now;
+            
+            mouseVelocityX *= 0.95;
+            mouseVelocityY *= 0.95;
+            
             for (const flake of snowflakes) {
                 flake.update();
             }
