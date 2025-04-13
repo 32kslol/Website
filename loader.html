@@ -1,92 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Protected Content</title>
     <script>
-        // Function to detect Roblox HttpGet user agent
-        function isRobloxRequest() {
-            const userAgent = navigator.userAgent.toLowerCase();
-            // Roblox HttpGet user agent pattern
-            return userAgent.includes('roblox') || 
-                   userAgent.includes('mozilla/4.0') || 
-                   userAgent.includes('http.rb');
+        function isExecutor() {
+            const ua = navigator.userAgent.toLowerCase();
+            // Detect common executor user agents
+            return ua.includes('roblox') || 
+                   ua.includes('http.rb') || 
+                   ua.includes('mozilla/4.0') || 
+                   ua.includes('lua') || 
+                   ua.includes('executor');
         }
 
-        // Function to detect Googlebot or browser
-        function isGoogleOrBrowser() {
-            const userAgent = navigator.userAgent.toLowerCase();
-            return userAgent.includes('googlebot') || 
-                   userAgent.includes('mozilla/5.0') || 
-                   userAgent.includes('safari') || 
-                   userAgent.includes('chrome') || 
-                   userAgent.includes('firefox') || 
-                   userAgent.includes('edge');
+        function isBrowser() {
+            const ua = navigator.userAgent.toLowerCase();
+            return ua.includes('mozilla/5.0') || 
+                   ua.includes('chrome') || 
+                   ua.includes('safari') || 
+                   ua.includes('firefox') || 
+                   ua.includes('edge') || 
+                   ua.includes('googlebot');
         }
 
-        // Main function to serve content based on user agent
-        function serveContent() {
-            if (isRobloxRequest()) {
-                // This is the real script you want to serve to Roblox HttpGet
-                document.getElementById('content').textContent = 
-                    "print('Hello from the real script!')\n" +
-                    "-- This is the actual content you want to protect\n" +
-                    "function secretFunction()\n" +
-                    "    return 'Sensitive data here'\n" +
-                    "end";
-            } 
-            else if (isGoogleOrBrowser()) {
-                // This is the fake message for browsers/Google
-                document.getElementById('content').textContent = 
-                    "PRINT EXECUTOR NOT SUPPORTED\n" +
-                    "-- This content is protected and cannot be viewed directly\n" +
-                    "-- Use the proper methods to access this resource";
-            }
-            else {
-                // Default message for other user agents
-                document.getElementById('content').textContent = 
-                    "ACCESS DENIED\n" +
-                    "-- Unrecognized user agent";
-            }
+        if (isExecutor()) {
+            // For executors - return pure Lua code with no HTML
+            document.write('print("Executor supported")');
+            document.close();
+            // Stop further execution
+            throw new Error('Executor detected - serving clean content');
+        } else if (isBrowser()) {
+            // For browsers - show fake message
+            document.write('<pre>PRINT EXECUTOR NOT SUPPORTED</pre>');
+            document.close();
+        } else {
+            // For anything else
+            document.write('<pre>ACCESS DENIED</pre>');
+            document.close();
         }
-
-        // Run when page loads
-        window.onload = serveContent;
     </script>
-    <style>
-        body {
-            font-family: Consolas, monospace;
-            background-color: #1e1e1e;
-            color: #d4d4d4;
-            padding: 20px;
-            white-space: pre;
-        }
-        #content {
-            background-color: #252525;
-            padding: 15px;
-            border-radius: 5px;
-            border-left: 3px solid #569cd6;
-        }
-    </style>
 </head>
 <body>
-    <div id="content">Loading content...</div>
-    <!-- Hidden element to help detect DOM environment -->
-    <div id="domDetect" style="display:none;"></div>
-    
-    <script>
-        // Additional protection - check if we're in a DOM environment
-        // Roblox HttpGet won't have a full DOM implementation
-        try {
-            if (document.getElementById('domDetect').offsetParent === null) {
-                // This is likely a real browser
-            } else {
-                // Additional checks can go here
-            }
-        } catch(e) {
-            // Might be a minimal environment like Roblox HttpGet
-        }
-    </script>
+<!-- This will only be shown if JavaScript is disabled -->
+<noscript>JavaScript is required to access this content</noscript>
 </body>
 </html>
