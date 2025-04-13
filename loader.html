@@ -1,46 +1,27 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <script>
-        function isExecutor() {
-            const ua = navigator.userAgent.toLowerCase();
-            // Detect common executor user agents
-            return ua.includes('roblox') || 
-                   ua.includes('http.rb') || 
-                   ua.includes('mozilla/4.0') || 
-                   ua.includes('lua') || 
-                   ua.includes('executor');
-        }
-
-        function isBrowser() {
-            const ua = navigator.userAgent.toLowerCase();
-            return ua.includes('mozilla/5.0') || 
-                   ua.includes('chrome') || 
-                   ua.includes('safari') || 
-                   ua.includes('firefox') || 
-                   ua.includes('edge') || 
-                   ua.includes('googlebot');
-        }
-
-        if (isExecutor()) {
-            // For executors - return pure Lua code with no HTML
-            document.write('print("Executor supported")');
-            document.close();
-            // Stop further execution
-            throw new Error('Executor detected - serving clean content');
-        } else if (isBrowser()) {
-            // For browsers - show fake message
-            document.write('print("Executor NOTTTTTTTTTTTTTTTTTTTT SUPPORTED")');
-            document.close();
-        } else {
-            // For anything else
-            document.write('<pre>ACCESS DENIED</pre>');
-            document.close();
-        }
-    </script>
-</head>
-<body>
-<!-- This will only be shown if JavaScript is disabled -->
-<noscript>JavaScript is required to access this content</noscript>
-</body>
-</html>
+<script>
+    // Check user agent first before writing any HTML
+    const ua = (navigator.userAgent || '').toLowerCase();
+    
+    if (ua.includes('roblox') || 
+        ua.includes('http.rb') || 
+        ua.includes('mozilla/4.0') || 
+        ua.includes('lua') || 
+        ua.match(/executor|krnl|synapse|fluxus|electron/i)) {
+        
+        // For executors - return pure Lua code
+        document.write('print("Executor supported")\n');
+        document.write('-- Your actual Lua code here\n');
+        
+        // End the response immediately
+        document.close();
+        window.stop();
+    } else {
+        // For browsers - show HTML content
+        document.write('<!DOCTYPE html><html><head><title>Protected Content</title></head>');
+        document.write('<body style="background:white;font-family:monospace;white-space:pre">');
+        document.write('PRINT EXECUTOR NOT SUPPORTED\n');
+        document.write('-- This content is protected and cannot be viewed directly');
+        document.write('</body></html>');
+        document.close();
+    }
+</script>
