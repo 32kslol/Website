@@ -1,43 +1,40 @@
+--[=[
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Executor Detection</title>
+    <title>Access Denied</title>
     <style>
-        #content {
-            display: none;
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+            background-color: #f0f0f0;
         }
-        #blocked {
-            color: red;
-            font-weight: bold;
+        h1 {
+            color: #ff4444;
+        }
+        p {
+            font-size: 18px;
+            color: #333;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            display: inline-block;
         }
     </style>
 </head>
 <body>
-    <div id="content">
-        <!-- Your legit script or download link or whatever you want to show -->
-        <p>Welcome, script is available.</p>
-        <script src="yourscript.js"></script>
+    <div class="container">
+        <h1>Executor not supported</h1>
+        <p>This script can only be accessed by authorized clients.</p>
     </div>
-
-    <div id="blocked">
-        <!-- Message if no proper user agent -->
-        <p>Access denied. Missing or invalid user agent.</p>
-    </div>
-
     <script>
-        const userAgent = navigator.userAgent;
-
-        // Basic check: show content only if there's a user agent and it's not suspiciously empty
-        if (userAgent && userAgent.trim().length > 0) {
-            document.getElementById('content').style.display = 'block';
-            document.getElementById('blocked').style.display = 'none';
-        } else {
-            // This would happen only in weird cases or some bot/executor setups
-            document.getElementById('blocked').style.display = 'block';
-        }
-
-        console.log("User-Agent:", userAgent); // Optional debug log
+        // Optional: Log for debugging (Roblox won't run this)
+        console.log("Browser detected. Displaying HTML message.");
     </script>
 </body>
 </html>
+]=]
+print("Hello from the script! This is the real Lua code.")
