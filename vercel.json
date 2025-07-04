@@ -1,3 +1,7 @@
 {
-  "cleanurls": "true"
+  "functions": {
+    "api/**/*.js": {
+      "runtime": "edge"
+    }
+  }
 }
