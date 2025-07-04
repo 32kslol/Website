@@ -2,7 +2,7 @@
 
 
 const keyDatabase = {
-  'aP7xK9vRqT2mF1Hz': 'HWID-1111',
+  'aP7xK9vRqT2mF1Hz': '6AA9D355-09D8-416E-8502-D6C8AC1E598B',
   'KEY-5678': 'HWID-2222',
   'KEY-ABCD': 'HWID-3333'
 };
@@ -30,5 +30,5 @@ export default function handler(req, res) {
   }
 
   // ✅ Valid
-  return res.status(200).send(script);
+  return res.status(200).send(print("32ks.lol -> *Success!"));
 }
