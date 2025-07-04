@@ -1,47 +1,42 @@
+export const config = {
+  runtime: 'edge',
+};
+
 const keyDatabase = {
   'aP7xK9vRqT2mF1Hz': 'HWID-1111',
   'KEY-5678': 'HWID-2222',
   'KEY-ABCD': 'HWID-3333'
 };
 
-export default function handler(req, res) {
-  const { key, hwid } = req.query;
+export default function handler(req) {
+  const { searchParams } = new URL(req.url);
+  const key = searchParams.get('key');
+  const hwid = searchParams.get('hwid');
 
-  // Validate that key and hwid are non-empty strings
-  if (typeof key !== 'string' || key.trim() === '') {
-    return res.status(400).json({
+  if (!key || !hwid) {
+    return new Response(JSON.stringify({
       success: false,
-      message: 'Missing or invalid key'
-    });
+      message: 'Missing key or hwid'
+    }), { status: 400, headers: { 'Content-Type': 'application/json' } });
   }
 
-  if (typeof hwid !== 'string' || hwid.trim() === '') {
-    return res.status(400).json({
-      success: false,
-      message: 'Missing or invalid hwid'
-    });
-  }
-
-  // Check if key exists in database
   const expectedHWID = keyDatabase[key];
   if (!expectedHWID) {
-    return res.status(403).json({
+    return new Response(JSON.stringify({
       success: false,
       message: 'Invalid key'
-    });
+    }), { status: 403, headers: { 'Content-Type': 'application/json' } });
   }
 
-  // Check if HWID matches expected HWID
   if (expectedHWID !== hwid) {
-    return res.status(403).json({
+    return new Response(JSON.stringify({
       success: false,
       message: 'HWID mismatch'
-    });
+    }), { status: 403, headers: { 'Content-Type': 'application/json' } });
   }
 
-  // If all checks pass
-  return res.status(200).json({
+  return new Response(JSON.stringify({
     success: true,
     valid: true
-  });
+  }), { status: 200, headers: { 'Content-Type': 'application/json' } });
 }
