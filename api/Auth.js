@@ -34,8 +34,5 @@ export default function handler(req, res) {
   }
 
   // ✅ Valid
-  return res.status(200).json({
-    success: true,
-    valid: true
-  });
+  return res.status(200).send('return true');
 }
