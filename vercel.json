@@ -1,7 +1,7 @@
 {
   "functions": {
-    "api/**/*.js": {
-      "runtime": "edge"
+    "api/verifyKeys.js": {
+      "runtime": "nodejs18.x"
     }
   }
 }
