@@ -1,26 +1,41 @@
+// Simple key-to-HWID mapping
+const keyDatabase = {
+  'aP7xK9vRqT2mF1Hz': 'HWID-1111',
+  'KEY-5678': 'HWID-2222',
+  'KEY-ABCD': 'HWID-3333'
+};
+
 export default function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method Not Allowed' });
-  }
+  const { key, hwid } = req.query;
 
-  const { key, hwid } = req.body;
-
+  // Check if key and hwid were provided
   if (!key || !hwid) {
-    return res.status(400).json({ error: 'Key and HWID are required' });
+    return res.status(400).json({
+      success: false,
+      message: 'Missing key or hwid'
+    });
   }
 
-  // Store your keys and hwids here
-  // Format: key: hwid
-  const validKeys = {
-    "KEY123": "HWID-ABC-123",
-    "KEY456": "HWID-XYZ-789",
-    "KEY789": "HWID-DEF-456"
-  };
-
-  // Check if the key exists and HWID matches
-  if (validKeys[key] && validKeys[key] === hwid) {
-    return res.status(200).json({ success: true, message: "Key and HWID verified" });
-  } else {
-    return res.status(401).json({ success: false, message: "Invalid key or HWID" });
+  // Check if key exists
+  const expectedHWID = keyDatabase[key];
+  if (!expectedHWID) {
+    return res.status(403).json({
+      success: false,
+      message: 'Invalid key'
+    });
   }
+
+  // Check if HWID matches
+  if (expectedHWID !== hwid) {
+    return res.status(403).json({
+      success: false,
+      message: 'HWID mismatch'
+    });
+  }
+
+  // ✅ Valid
+  return res.status(200).json({
+    success: true,
+    valid: true
+  });
 }
