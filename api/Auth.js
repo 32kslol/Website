@@ -12,10 +12,7 @@ export default function handler(req, res) {
 
   // Check if key and hwid were provided
   if (!key || !hwid) {
-    return res.status(400).json({
-      success: false,
-      message: 'Missing key or hwid'
-    });
+    return res.status(400).send('error("32ks.lol -> *Missing Key/Hwid")')
   }
 
   // Check if key exists
