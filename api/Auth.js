@@ -8,7 +8,7 @@ const keyDatabase = {
 };
 
 export default function handler(req, res) {
-  const { key, name } = req.query;
+  const { name, key } = req.query;
 
   // Check if key and name were provided
   if (!key || !name) {
@@ -27,5 +27,5 @@ export default function handler(req, res) {
   }
 
   // ✅ Valid
-  return res.status(200).send('Detected');
+  return res.status(200).send('');
 }
