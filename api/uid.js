@@ -40,7 +40,7 @@ export default function handler(req, res) {
   const now = Date.now();
   const lastTime = rateLimitMap.get(userIP);
   if (lastTime && now - lastTime < RATE_LIMIT_DELAY) {
-    return res.status(429).send('error("32ks.lol -> Slow down!")');
+    return res.status(429).send('error("32ks.lol -> Ratelimited")');
   }
   rateLimitMap.set(userIP, now);
 
