@@ -18,7 +18,7 @@ export default function handler(req, res) {
   // Check if key exists
   const ExpectedName = keyDatabase[key];
   if (!ExpectedName) {
-     return res.status(403).send('error("32ks.lol -> Invalid Key!")'); 
+     return res.status(403).send('error("32ks.lol -> Invalid Name!")'); 
   }
 
   // Check if name matches
