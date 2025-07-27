@@ -3,7 +3,7 @@
 
 const keyDatabase = {
   'aP7xK9vRqT2mF1Hz': {
-    hwid: '6AA9D355-09D8-416E-8502-D6C8AC1E598B',
+    hwid: '3F1FA70F-5534-4D1C-88B0-3C7A4F61FA01',
     ip: '192.168.1.100'
   },
   'KEY-5678': {
