@@ -1,10 +1,9 @@
 // Simple key-to-name mapping
 
-
 const keyDatabase = {
-  'Admin': 'Test',
+  'Admin': '!Test',
   'KEY-567asd': 'VXYC?VCXY:?xcy',
-  'KEYfasBCD': 'Hgfagdsyxcb---3sdgf33'
+  'KEY3': 'Hgfagdsyxcb---3sdgf33'
 };
 
 export default function handler(req, res) {
@@ -12,13 +11,13 @@ export default function handler(req, res) {
 
   // Check if key and name were provided
   if (!key || !name) {
-    return res.status(400).send('error("32ks.lol -> *Missing Key/Name")')
+    return res.status(400).send('error("32ks.lol -> *Missing Key/Name")');
   }
 
   // Check if key exists
   const ExpectedName = keyDatabase[key];
   if (!ExpectedName) {
-     return res.status(403).send('error("32ks.lol -> Invalid Name!")'); 
+    return res.status(403).send('error("32ks.lol -> Invalid Name!")');
   }
 
   // Check if name matches
@@ -26,6 +25,9 @@ export default function handler(req, res) {
     return res.status(403).send('error("32ks.lol -> Name Mismatch!")');
   }
 
-  // ✅ Valid
-  return res.status(200).send('');
+  // ✅ Valid - Get UID based on key's index in the object
+  const keys = Object.keys(keyDatabase);
+  const uid = keys.indexOf(key) + 1;
+
+  return res.status(200).send(`${uid}`);
 }
