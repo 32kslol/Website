@@ -1,31 +1,31 @@
-// Simple key-to-HWID mapping
+// Simple key-to-name mapping
 
 
 const keyDatabase = {
-  'aP7xK9vRqT2mF1Hz': '6AA9D355-09D8-416E-8502-D6C8AC1E598B',
-  'KEY-5678': 'HWID-2222',
-  'KEY-ABCD': 'HWID-3333'
+  'Admin': 'Test',
+  'KEY-567asd': 'VXYC?VCXY:?xcy',
+  'KEYfasBCD': 'Hgfagdsyxcb---3sdgf33'
 };
 
 export default function handler(req, res) {
-  const { key, hwid } = req.query;
+  const { key, name } = req.query;
 
-  // Check if key and hwid were provided
-  if (!key || !hwid) {
-    return res.status(400).send('error("32ks.lol -> *Missing Key/Hwid")')
+  // Check if key and name were provided
+  if (!key || !name) {
+    return res.status(400).send('error("32ks.lol -> *Missing Key/Name")')
   }
 
   // Check if key exists
-  const expectedHWID = keyDatabase[key];
-  if (!expectedHWID) {
+  const ExpectedName = keyDatabase[key];
+  if (!ExpectedName) {
      return res.status(403).send('error("32ks.lol -> Invalid Key!")'); 
   }
 
-  // Check if HWID matches
-  if (expectedHWID !== hwid) {
-    return res.status(403).send('error("32ks.lol -> Hwid Mismatch!")');
+  // Check if name matches
+  if (ExpectedName !== name) {
+    return res.status(403).send('error("32ks.lol -> Name Mismatch!")');
   }
 
   // ✅ Valid
-  return res.status(200).send('print("32ks.lol -> *Success!")');
+  return res.status(200).send('Detected');
 }
