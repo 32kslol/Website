@@ -1,18 +1,14 @@
-
-// /pages/api/auth.js (or any filename under /pages/api)
+// /pages/api/auth.js
 
 const keyDatabase = {
   'aP7xK9vRqT2mF1Hz': {
-    hwid: '3F1FA70F-5534-4D1C-88B0-3C7A4F61FA01',
-    ip: '192.168.1.100'
+    hwid: '3F1FA70F-5534-4D1C-88B0-3C7A4F61FA01'
   },
   'KEY-5678': {
-    hwid: 'HWID-2222',
-    ip: '192.168.1.101'
+    hwid: 'HWID-2222'
   },
   'KEY-ABCD': {
-    hwid: 'HWID-3333',
-    ip: '192.168.1.102'
+    hwid: 'HWID-3333'
   }
 };
 
@@ -47,11 +43,6 @@ export default function handler(req, res) {
   // HWID check
   if (record.hwid !== hwid) {
     return res.status(403).send('error("32ks.lol -> Hwid Mismatch!")');
-  }
-
-  // IP check
-  if (record.ip !== userIP) {
-    return res.status(403).send('error("32ks.lol -> IP Mismatch!")');
   }
 
   // Success
