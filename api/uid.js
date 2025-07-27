@@ -46,5 +46,5 @@ export default function handler(req, res) {
   }
 
   // Success
-  return res.status(200).send('print("32ks.lol -> *Success!")');
+  return res.status(200).send('return true');
 }
