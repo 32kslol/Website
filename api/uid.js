@@ -46,5 +46,5 @@ export default function handler(req, res) {
   }
 
   // Success
-  return res.status(200).send('return true');
+  return res.status(200).send('Eggcelent');
 }
