@@ -1,0 +1,1 @@
+i cracked templehook it was quite easy, this is what i did. first i hooked all http requests to return 200(first wave of security bypassed) then, use hookfunction to hook your character and return nil incase they try to kick you. NP you bypassed it.
